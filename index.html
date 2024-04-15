@@ -9,46 +9,59 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/4.6.0/aws-cognito-identity.min.js"></script>
 <script src="config.js"></script>
 <script>
-// Define the poolData for Amazon Cognito
-var poolData = {
-    UserPoolId: window._config.cognito.userPoolId,
-    ClientId: window._config.cognito.userPoolClientId
-};
-
-// Function to log in a user
-function loginUser() {
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-
-    var authenticationData = {
-        Username: username,
-        Password: password,
-    };
-    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
-
-    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-    var userData = {
-        Username: username,
-        Pool: userPool
-    };
-    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-
-    cognitoUser.authenticateUser(authenticationDetails, {
-        onSuccess: function (result) {
-            console.log('Login successful: ' + result.getIdToken().getJwtToken());
-            closeModal();
-        },
-        onFailure: function(err) {
-            console.log('Login failed: ' + err.message || JSON.stringify(err));
-            // Optionally, display an error message
-        }
-    });
-}
-
-// Function to close the modal
-function closeModal() {
+window.onload = function() {
+    // Get the modal
     var modal = document.getElementById('loginModal');
-    modal.style.display = "none";
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the page loads, open the modal
+    modal.style.display = "block";
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Function to log in a user
+    function loginUser() {
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+
+        var authenticationData = {
+            Username: username,
+            Password: password,
+        };
+        var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+
+        var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+        var userData = {
+            Username: username,
+            Pool: userPool
+        };
+        var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+        cognitoUser.authenticateUser(authenticationDetails, {
+            onSuccess: function (result) {
+                console.log('Login successful: ' + result.getIdToken().getJwtToken());
+                modal.style.display = "none";
+                // Redirect to the home page or another page after successful login
+                window.location.href = "/home.html";
+            },
+            onFailure: function(err) {
+                console.log('Login failed: ' + err.message || JSON.stringify(err));
+                // Optionally, display an error message
+            }
+        });
+    }
 }
 </script>
 </head>
@@ -68,6 +81,7 @@ function closeModal() {
     <div class="dropdown-content">
       <!-- American League -->
       <div class="dropdown-divider">American League</div>
+      
       <!-- AL East -->
       <div class="dropdown-header">AL East</div>
       <a href="/teams/orioles.html">Baltimore Orioles</a>
@@ -75,6 +89,7 @@ function closeModal() {
       <a href="/teams/yankees.html">New York Yankees</a>
       <a href="/teams/rays.html">Tampa Bay Rays</a>
       <a href="/teams/bluejays.html">Toronto Blue Jays</a>
+      
       <!-- AL Central -->
       <div class="dropdown-header">AL Central</div>
       <a href="/teams/whitesox.html">Chicago White Sox</a>
@@ -82,6 +97,7 @@ function closeModal() {
       <a href="/teams/tigers.html">Detroit Tigers</a>
       <a href="/teams/royals.html">Kansas City Royals</a>
       <a href="/teams/twins.html">Minnesota Twins</a>
+      
       <!-- AL West -->
       <div class="dropdown-header">AL West</div>
       <a href="/teams/astros.html">Houston Astros</a>
@@ -89,8 +105,10 @@ function closeModal() {
       <a href="/teams/athletics.html">Oakland Athletics</a>
       <a href="/teams/mariners.html">Seattle Mariners</a>
       <a href="/teams/rangers.html">Texas Rangers</a>
+
       <!-- National League -->
       <div class="dropdown-divider">National League</div>
+      
       <!-- NL East -->
       <div class="dropdown-header">NL East</div>
       <a href="/teams/braves.html">Atlanta Braves</a>
@@ -98,6 +116,7 @@ function closeModal() {
       <a href="/teams/mets.html">New York Mets</a>
       <a href="/teams/phillies.html">Philadelphia Phillies</a>
       <a href="/teams/nationals.html">Washington Nationals</a>
+      
       <!-- NL Central -->
       <div class="dropdown-header">NL Central</div>
       <a href="/teams/cubs.html">Chicago Cubs</a>
@@ -105,6 +124,7 @@ function closeModal() {
       <a href="/teams/brewers.html">Milwaukee Brewers</a>
       <a href="/teams/pirates.html">Pittsburgh Pirates</a>
       <a href="/teams/cardinals.html">St. Louis Cardinals</a>
+      
       <!-- NL West -->
       <div class="dropdown-header">NL West</div>
       <a href="/teams/diamondbacks.html">Arizona Diamondbacks</a>
@@ -117,7 +137,7 @@ function closeModal() {
     <!-- Login Modal -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
+            <span class="close">&times;</span>
             <h2>Login</h2>
             <input type="text" id="username" placeholder="Username">
             <input type="password" id="password" placeholder="Password">
