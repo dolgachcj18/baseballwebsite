@@ -66,7 +66,9 @@ window.onload = function() {
 
 <div class="header">
   <h1>Warhawk Analytics</h1>
-  <!-- You can add navigation items here -->
+  <!-- Add navigation items here -->
+  <!-- Login button -->
+  <button id="loginButton" onclick="document.getElementById('loginModal').style.display='block'">Login</button>
 </div>
 
 <div class="main-body">
@@ -134,7 +136,7 @@ window.onload = function() {
     <!-- Login Modal -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <span id="closeModal" class="close">&times;</span>
+            <span id="closeModal" class="close" onclick="document.getElementById('loginModal').style.display='none'">&times;</span>
             <h2>Login</h2>
             <input type="text" id="username" placeholder="Username">
             <input type="password" id="password" placeholder="Password">
