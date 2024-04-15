@@ -3,13 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Analytics Made Easy</title>
+<title>Warhawk Analytics</title>
 <link rel="stylesheet" href="styles/styles.css">
+<link rel="stylesheet" href="styles/modal.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/4.6.0/aws-cognito-identity.min.js"></script>
+<script src="config.js"></script>
+<script>
+// Get the modal
+var modal = document.getElementById('loginModal');
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the page loads, open the modal
+window.onload = function() {
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+// Function to log in a user
+function loginUser() {
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+
+    var authenticationData = {
+        Username: username,
+        Password: password,
+    };
+    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+
+    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    var userData = {
+        Username: username,
+        Pool: userPool
+    };
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+    cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: function (result) {
+            console.log('Login successful: ' + result.getIdToken().getJwtToken());
+            modal.style.display = "none";
+        },
+        onFailure: function(err) {
+            console.log('Login failed: ' + err.message || JSON.stringify(err));
+            // Optionally, display an error message
+        }
+    });
+}
+</script>
 </head>
 <body>
 
 <div class="header">
-  <h1>Your Website Title</h1>
+  <h1>Warhawk Analytics</h1>
   <!-- You can add navigation items here -->
 </div>
 
@@ -25,59 +82,71 @@
   
   <!-- AL East -->
   <div class="dropdown-header">AL East</div>
-  <a href="orioles.html">Baltimore Orioles</a>
-  <a href="redsox.html">Boston Red Sox</a>
-  <a href="yankees.html">New York Yankees</a>
-  <a href="rays.html">Tampa Bay Rays</a>
-  <a href="bluejays.html">Toronto Blue Jays</a>
+  <a href="/teams/orioles.html">Baltimore Orioles</a>
+  <a href="/teams/redsox.html">Boston Red Sox</a>
+  <a href="/teams/yankees.html">New York Yankees</a>
+  <a href="/teams/rays.html">Tampa Bay Rays</a>
+  <a href="/teams/bluejays.html">Toronto Blue Jays</a>
   
   <!-- AL Central -->
   <div class="dropdown-header">AL Central</div>
-  <a href="whitesox.html">Chicago White Sox</a>
-  <a href="guardians.html">Cleveland Guardians</a>
-  <a href="tigers.html">Detroit Tigers</a>
-  <a href="royals.html">Kansas City Royals</a>
-  <a href="twins.html">Minnesota Twins</a>
+  <a href="/teams/whitesox.html">Chicago White Sox</a>
+  <a href="/teams/guardians.html">Cleveland Guardians</a>
+  <a href="/teams/tigers.html">Detroit Tigers</a>
+  <a href="/teams/royals.html">Kansas City Royals</a>
+  <a href="/teams/twins.html">Minnesota Twins</a>
   
   <!-- AL West -->
   <div class="dropdown-header">AL West</div>
-  <a href="astros.html">Houston Astros</a>
-  <a href="angels.html">Los Angeles Angels</a>
-  <a href="athletics.html">Oakland Athletics</a>
-  <a href="mariners.html">Seattle Mariners</a>
-  <a href="rangers.html">Texas Rangers</a>
+  <a href="/teams/astros.html">Houston Astros</a>
+  <a href="/teams/angels.html">Los Angeles Angels</a>
+  <a href="/teams/athletics.html">Oakland Athletics</a>
+  <a href="/teams/mariners.html">Seattle Mariners</a>
+  <a href="/teams/rangers.html">Texas Rangers</a>
 
   <!-- National League -->
   <div class="dropdown-divider">National League</div>
   
   <!-- NL East -->
   <div class="dropdown-header">NL East</div>
-  <a href="braves.html">Atlanta Braves</a>
-  <a href="marlins.html">Miami Marlins</a>
-  <a href="mets.html">New York Mets</a>
-  <a href="phillies.html">Philadelphia Phillies</a>
-  <a href="nationals.html">Washington Nationals</a>
+  <a href="/teams/braves.html">Atlanta Braves</a>
+  <a href="/teams/marlins.html">Miami Marlins</a>
+  <a href="/teams/mets.html">New York Mets</a>
+  <a href="/teams/phillies.html">Philadelphia Phillies</a>
+  <a href="/teams/nationals.html">Washington Nationals</a>
   
   <!-- NL Central -->
   <div class="dropdown-header">NL Central</div>
-  <a href="cubs.html">Chicago Cubs</a>
-  <a href="reds.html">Cincinnati Reds</a>
-  <a href="brewers.html">Milwaukee Brewers</a>
-  <a href="pirates.html">Pittsburgh Pirates</a>
-  <a href="cardinals.html">St. Louis Cardinals</a>
+  <a href="/teams/cubs.html">Chicago Cubs</a>
+  <a href="/teams/reds.html">Cincinnati Reds</a>
+  <a href="/teams/brewers.html">Milwaukee Brewers</a>
+  <a href="/teams/pirates.html">Pittsburgh Pirates</a>
+  <a href="/teams/cardinals.html">St. Louis Cardinals</a>
   
   <!-- NL West -->
   <div class="dropdown-header">NL West</div>
-  <a href="diamondbacks.html">Arizona Diamondbacks</a>
-  <a href="rockies.html">Colorado Rockies</a>
-  <a href="dodgers.html">Los Angeles Dodgers</a>
-  <a href="padres.html">San Diego Padres</a>
-  <a href="giants.html">San Francisco Giants</a>
+  <a href="/teams/diamondbacks.html">Arizona Diamondbacks</a>
+  <a href="/teams/rockies.html">Colorado Rockies</a>
+  <a href="/teams/dodgers.html">Los Angeles Dodgers</a>
+  <a href="/teams/padres.html">San Diego Padres</a>
+  <a href="/teams/giants.html">San Francisco Giants</a>
 </div>
 
+      <!-- Login Modal -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="loginUser()">Login</button>
+    </div>
+</div>
 
     </div>
   </div>
 
 </body>
 </html>
+
+<!-- random comment-->
