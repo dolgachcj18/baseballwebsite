@@ -9,76 +9,76 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/4.6.0/aws-cognito-identity.min.js"></script>
 <script src="config.js"></script>
 <script>
-// Define the poolData for Amazon Cognito
-var poolData = {
-    UserPoolId: 'us-east-2_3UU1rk0IH',
-    ClientId: '4gps9mrt82harj0pmkl4fjqcm2'
-};
-
-// Get the modal
-var modal = document.getElementById('loginModal');
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the page loads, open the modal
 window.onload = function() {
+    // Define the poolData for Amazon Cognito
+    var poolData = {
+        UserPoolId: 'us-east-2_3UU1rk0IH',
+        ClientId: '4gps9mrt82harj0pmkl4fjqcm2'
+    };
+
+    // Get the modal
+    var modal = document.getElementById('loginModal');
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the page loads, open the modal
     modal.style.display = "block";
-}
 
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-    modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
         modal.style.display = "none";
     }
-}
 
-// Function to log in a user
-function loginUser() {
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-
-    var authenticationData = {
-        Username: username,
-        Password: password,
-    };
-    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
-
-    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-    var userData = {
-        Username: username,
-        Pool: userPool
-    };
-    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-
-    cognitoUser.authenticateUser(authenticationDetails, {
-        onSuccess: function (result) {
-            console.log('Login successful: ' + result.getIdToken().getJwtToken());
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
             modal.style.display = "none";
-            // Redirect to the home page or another page after successful login
-            window.location.href = "/home.html";
-        },
-        onFailure: function(err) {
-            console.log('Login failed: ' + err.message || JSON.stringify(err));
-            // Optionally, display an error message
         }
-    });
-}
+    }
 
-// Redirect broken links to a specific page
-document.addEventListener("DOMContentLoaded", function() {
-    var links = document.querySelectorAll("a[href]");
-    links.forEach(function(link) {
-        link.addEventListener("error", function() {
-            window.location.href = "/404.html"; // Redirect to 404 page
+    // Function to log in a user
+    function loginUser() {
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+
+        var authenticationData = {
+            Username: username,
+            Password: password,
+        };
+        var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+
+        var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+        var userData = {
+            Username: username,
+            Pool: userPool
+        };
+        var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+        cognitoUser.authenticateUser(authenticationDetails, {
+            onSuccess: function (result) {
+                console.log('Login successful: ' + result.getIdToken().getJwtToken());
+                modal.style.display = "none";
+                // Redirect to the home page or another page after successful login
+                window.location.href = "/home.html";
+            },
+            onFailure: function(err) {
+                console.log('Login failed: ' + err.message || JSON.stringify(err));
+                // Optionally, display an error message
+            }
+        });
+    }
+
+    // Redirect broken links to a specific page
+    document.addEventListener("DOMContentLoaded", function() {
+        var links = document.querySelectorAll("a[href]");
+        links.forEach(function(link) {
+            link.addEventListener("error", function() {
+                window.location.href = "/404.html"; // Redirect to 404 page
+            });
         });
     });
-});
+}
 </script>
 </head>
 <body>
