@@ -9,93 +9,58 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/4.6.0/aws-cognito-identity.min.js"></script>
 <script src="config.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var loginModal = document.getElementById('loginModal');
-    var registerModal = document.getElementById('registerModal');
-    var closeLoginModal = document.getElementsByClassName("close")[0];
-    var closeRegisterModal = document.getElementById("closeRegisterModal");
+// Get the modal
+var modal = document.getElementById('loginModal');
 
-    var loginButton = document.getElementById('loginButton');
-    var registerButton = document.getElementById('registerButton');
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
 
-    loginButton.onclick = function() {
-        loginModal.style.display = "block";
+// When the page loads, open the modal
+window.onload = function() {
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
     }
+}
 
-    registerButton.onclick = function() {
-        registerModal.style.display = "block";
-    }
+// Function to log in a user
+function loginUser() {
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
 
-    closeLoginModal.onclick = function() {
-        loginModal.style.display = "none";
-    }
+    var authenticationData = {
+        Username: username,
+        Password: password,
+    };
+    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
 
-    closeRegisterModal.onclick = function() {
-        registerModal.style.display = "none";
-    }
+    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    var userData = {
+        Username: username,
+        Pool: userPool
+    };
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
 
-    window.onclick = function(event) {
-        if (event.target == loginModal) {
-            loginModal.style.display = "none";
-        } else if (event.target == registerModal) {
-            registerModal.style.display = "none";
+    cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: function (result) {
+            console.log('Login successful: ' + result.getIdToken().getJwtToken());
+            modal.style.display = "none";
+        },
+        onFailure: function(err) {
+            console.log('Login failed: ' + err.message || JSON.stringify(err));
+            // Optionally, display an error message
         }
-    }
-
-    function loginUser() {
-        var username = document.getElementById('username').value;
-        var password = document.getElementById('password').value;
-        var authenticationData = {
-            Username: username,
-            Password: password,
-        };
-        var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
-        var poolData = { UserPoolId: 'us-east-2_3UU1rk0IH', ClientId: '4gps9mrt82harj0pmkl4fjqcm2
-' };
-        var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-        var userData = {
-            Username: username,
-            Pool: userPool
-        };
-        var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-        cognitoUser.authenticateUser(authenticationDetails, {
-            onSuccess: function (result) {
-                console.log('Login successful: ' + result.getIdToken().getJwtToken());
-                loginModal.style.display = "none";
-            },
-            onFailure: function(err) {
-                console.log('Login failed: ' + err.message || JSON.stringify(err));
-                // Optionally, display an error message
-            }
-        });
-    }
-
-    function registerUser() {
-        var username = document.getElementById('registerUsername').value;
-        var password = document.getElementById('registerPassword').value;
-        var email = document.getElementById('registerEmail').value;
-        var attributeList = [];
-        var dataEmail = {
-            Name: 'email',
-            Value: email
-        };
-        var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
-        attributeList.push(attributeEmail);
-        var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-        userPool.signUp(username, password, attributeList, null, function(err, result) {
-            if (err) {
-                console.log(err.message || JSON.stringify(err));
-                return;
-            }
-            var cognitoUser = result.user;
-            console.log('User registration successful: ' + cognitoUser.getUsername());
-            // Automatically close the modal or prompt user to verify email
-        });
-    }
-    
-    document.getElementById('loginButtonModal').onclick = loginUser;
-    document.getElementById('registerButtonModal').onclick = registerUser;
-});
+    });
+}
 </script>
 </head>
 <body>
@@ -103,93 +68,84 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="header">
   <h1>Warhawk Analytics</h1>
   <button id="loginButton" class="login-button">Login</button>
-  <button id="registerButton" class="register-button">Register</button>
 </div>
 
 <div class="main-body">
   <div class="overlay"></div>
   <div class="dropdown">
+    <!-- Dropdown button -->
     <button>Choose an MLB Baseball team</button>
-    <div class="dropdown-content">
-      <!-- American League -->
-      <div class="dropdown-divider">American League</div>
-      
-      <!-- AL East -->
-      <div class="dropdown-header">AL East</div>
-      <a href="/teams/orioles.html">Baltimore Orioles</a>
-      <a href="/teams/redsox.html">Boston Red Sox</a>
-      <a href="/teams/yankees.html">New York Yankees</a>
-      <a href="/teams/rays.html">Tampa Bay Rays</a>
-      <a href="/teams/bluejays.html">Toronto Blue Jays</a>
-      
-      <!-- AL Central -->
-      <div class="dropdown-header">AL Central</div>
-      <a href="/teams/whitesox.html">Chicago White Sox</a>
-      <a href="/teams/guardians.html">Cleveland Guardians</a>
-      <a href="/teams/tigers.html">Detroit Tigers</a>
-      <a href="/teams/royals.html">Kansas City Royals</a>
-      <a href="/teams/twins.html">Minnesota Twins</a>
-      
-      <!-- AL West -->
-      <div class="dropdown-header">AL West</div>
-      <a href="/teams/astros.html">Houston Astros</a>
-      <a href="/teams/angels.html">Los Angeles Angels</a>
-      <a href="/teams/athletics.html">Oakland Athletics</a>
-      <a href="/teams/mariners.html">Seattle Mariners</a>
-      <a href="/teams/rangers.html">Texas Rangers</a>
+    <!-- Dropdown content -->
+<div class="dropdown-content">
+  <!-- American League -->
+  <div class="dropdown-divider">American League</div>
+  
+  <!-- AL East -->
+  <div class="dropdown-header">AL East</div>
+  <a href="/teams/orioles.html">Baltimore Orioles</a>
+  <a href="/teams/redsox.html">Boston Red Sox</a>
+  <a href="/teams/yankees.html">New York Yankees</a>
+  <a href="/teams/rays.html">Tampa Bay Rays</a>
+  <a href="/teams/bluejays.html">Toronto Blue Jays</a>
+  
+  <!-- AL Central -->
+  <div class="dropdown-header">AL Central</div>
+  <a href="/teams/whitesox.html">Chicago White Sox</a>
+  <a href="/teams/guardians.html">Cleveland Guardians</a>
+  <a href="/teams/tigers.html">Detroit Tigers</a>
+  <a href="/teams/royals.html">Kansas City Royals</a>
+  <a href="/teams/twins.html">Minnesota Twins</a>
+  
+  <!-- AL West -->
+  <div class="dropdown-header">AL West</div>
+  <a href="/teams/astros.html">Houston Astros</a>
+  <a href="/teams/angels.html">Los Angeles Angels</a>
+  <a href="/teams/athletics.html">Oakland Athletics</a>
+  <a href="/teams/mariners.html">Seattle Mariners</a>
+  <a href="/teams/rangers.html">Texas Rangers</a>
 
-      <!-- National League -->
-      <div class="dropdown-divider">National League</div>
-      
-      <!-- NL East -->
-      <div class="dropdown-header">NL East</div>
-      <a href="/teams/braves.html">Atlanta Braves</a>
-      <a href="/teams/marlins.html">Miami Marlins</a>
-      <a href="/teams/mets.html">New York Mets</a>
-      <a href="/teams/phillies.html">Philadelphia Phillies</a>
-      <a href="/teams/nationals.html">Washington Nationals</a>
-      
-      <!-- NL Central -->
-      <div class="dropdown-header">NL Central</div>
-      <a href="/teams/cubs.html">Chicago Cubs</a>
-      <a href="/teams/reds.html">Cincinnati Reds</a>
-      <a href="/teams/brewers.html">Milwaukee Brewers</a>
-      <a href="/teams/pirates.html">Pittsburgh Pirates</a>
-      <a href="/teams/cardinals.html">St. Louis Cardinals</a>
-      
-      <!-- NL West -->
-      <div class="dropdown-header">NL West</div>
-      <a href="/teams/diamondbacks.html">Arizona Diamondbacks</a>
-      <a href="/teams/rockies.html">Colorado Rockies</a>
-      <a href="/teams/dodgers.html">Los Angeles Dodgers</a>
-      <a href="/teams/padres.html">San Diego Padres</a>
-      <a href="/teams/giants.html">San Francisco Giants</a>
-    </div>
-  </div>
+  <!-- National League -->
+  <div class="dropdown-divider">National League</div>
+  
+  <!-- NL East -->
+  <div class="dropdown-header">NL East</div>
+  <a href="/teams/braves.html">Atlanta Braves</a>
+  <a href="/teams/marlins.html">Miami Marlins</a>
+  <a href="/teams/mets.html">New York Mets</a>
+  <a href="/teams/phillies.html">Philadelphia Phillies</a>
+  <a href="/teams/nationals.html">Washington Nationals</a>
+  
+  <!-- NL Central -->
+  <div class="dropdown-header">NL Central</div>
+  <a href="/teams/cubs.html">Chicago Cubs</a>
+  <a href="/teams/reds.html">Cincinnati Reds</a>
+  <a href="/teams/brewers.html">Milwaukee Brewers</a>
+  <a href="/teams/pirates.html">Pittsburgh Pirates</a>
+  <a href="/teams/cardinals.html">St. Louis Cardinals</a>
+  
+  <!-- NL West -->
+  <div class="dropdown-header">NL West</div>
+  <a href="/teams/diamondbacks.html">Arizona Diamondbacks</a>
+  <a href="/teams/rockies.html">Colorado Rockies</a>
+  <a href="/teams/dodgers.html">Los Angeles Dodgers</a>
+  <a href="/teams/padres.html">San Diego Padres</a>
+  <a href="/teams/giants.html">San Francisco Giants</a>
+</div>
 </div>
 
-<!-- Login Modal -->
+      <!-- Login Modal -->
 <div id="loginModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Login</h2>
         <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
-        <button id="loginButtonModal">Login</button>
+        <button onclick="loginUser()">Login</button>
     </div>
 </div>
 
-<!-- Registration Modal -->
-<div id="registerModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeRegisterModal">&times;</span>
-        <h2>Register</h2>
-        <input type="text" id="registerUsername" placeholder="Username">
-        <input type="password" id="registerPassword" placeholder="Password">
-        <input type="email" id="registerEmail" placeholder="Email">
-        <button id="registerButtonModal">Register</button>
     </div>
-</div>
+  </div>
 
 </body>
 </html>
