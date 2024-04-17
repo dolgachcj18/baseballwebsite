@@ -33,7 +33,78 @@
 
             var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
-            $('#loginForm').submit(function (event) {
+            $('#loginForm').submit(function (event) {<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.1118.0/aws-sdk.min.js"></script>
+</head>
+<body>
+    <h2>Register</h2>
+    <form id="registerForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username"><br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email"><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password"><br><br>
+        <button type="submit">Register</button>
+    </form>
+
+    <p id="errorMessage" style="color: red; display: none;">Error: Registration failed.</p>
+
+    <p>Already have an account? <a href="login.html">Login</a></p>
+
+    <script>
+        $(document).ready(function () {
+            var cognitoUserPoolId = 'us-east-2_3UU1rk0IH';
+            var cognitoAppClientId = '4gps9mrt82harj0pmkl4fjqcm2';
+
+            AWS.config.region = 'us-east-2';
+
+            var poolData = {
+                UserPoolId: cognitoUserPoolId,
+                ClientId: cognitoAppClientId
+            };
+
+            var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+            $('#registerForm').submit(function (event) {
+                event.preventDefault();
+                var username = $('#username').val();
+                var email = $('#email').val();
+                var password = $('#password').val();
+
+                var attributeList = [];
+
+                var dataEmail = {
+                    Name: 'email',
+                    Value: email
+                };
+
+                var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+
+                attributeList.push(attributeEmail);
+
+                userPool.signUp(username, password, attributeList, null, function (err, result) {
+                    if (err) {
+                        console.log('Registration failed:', err);
+                        $('#errorMessage').show().text('Error: ' + err.message);
+                    } else {
+                        console.log('Registration successful:', result);
+                        // Redirect to login page after successful registration
+                        window.location.href = 'login.html';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
                 event.preventDefault();
                 var username = $('#username').val();
                 var password = $('#password').val();
