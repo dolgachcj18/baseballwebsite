@@ -14,6 +14,24 @@ body, html {
   color: white;
 }
 
+/* Login Button Styles */
+.login-button {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.header {
+  position: relative; /* Ensures that the button can be positioned absolutely within the header */
+}
+
+
 /* Main body styles */
 .main-body {
   position: relative;

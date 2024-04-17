@@ -61,13 +61,17 @@ function loginUser() {
         }
     });
 }
+
+document.getElementById('loginButton').onclick = function() {
+    modal.style.display = "block";
+};
 </script>
 </head>
 <body>
 
 <div class="header">
   <h1>Warhawk Analytics</h1>
-  <!-- You can add navigation items here -->
+  <button id="loginButton" class="login-button">Login</button>
 </div>
 
 <div class="main-body">
@@ -131,6 +135,7 @@ function loginUser() {
   <a href="/teams/padres.html">San Diego Padres</a>
   <a href="/teams/giants.html">San Francisco Giants</a>
 </div>
+</div>
 
       <!-- Login Modal -->
 <div id="loginModal" class="modal">
@@ -148,5 +153,3 @@ function loginUser() {
 
 </body>
 </html>
-
-<!-- random comment-->
